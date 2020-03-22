@@ -11,12 +11,12 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [10.x, 12.x]
+    env:
+      working-directory: ./client
 
     steps:
     - uses: actions/checkout@v2
@@ -24,7 +24,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: cd client
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test

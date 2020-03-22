@@ -117,7 +117,14 @@ class ShooterScene extends Scene {
 
         // Display "game over" text
         const text = this.add.text(this.game.canvas.width / 2, this.game.canvas.height / 2, "Game Over :-(", 
-            { font: "65px Arial", fill: "#ff0044", align: "center" });
+            { font: "65px Arial", fill: "#ff0044" });
+
+        // TODO: 
+        // - Let user input their name
+        // - Send request to server to add a new highscore
+        // - Send request to server to receive all highscores
+        // - Show the highscores
+
         text.setOrigin(0.5, 0.5);
     }
 }

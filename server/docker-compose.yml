@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  spaceshooter:
+    image: ${DOCKER_REGISTRY-}spaceshooter
+    build:
+      context: .
+      dockerfile: SpaceShooter/Dockerfile
+    ports:
+        - "8081:80"
+        - "8082:443"

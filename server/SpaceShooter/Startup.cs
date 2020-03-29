@@ -29,6 +29,13 @@ namespace SpaceShooter
                     Configuration["ConnectionStrings:AccountKey"],
                     Configuration["ConnectionStrings:DatabaseName"]));
 
+            services.AddCors(o => o.AddPolicy("SpaceShooterPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
             services.AddControllers();
         }
 
@@ -41,6 +48,8 @@ namespace SpaceShooter
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors("SpaceShooterPolicy");
 
             app.UseHttpsRedirection();
 

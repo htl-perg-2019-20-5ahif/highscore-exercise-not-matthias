@@ -51,8 +51,6 @@ namespace SpaceShooter
 
             app.UseCors("SpaceShooterPolicy");
 
-            app.UseHttpsRedirection();
-
             app.UseRouting();
 
             app.UseAuthorization();

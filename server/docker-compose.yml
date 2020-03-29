@@ -2,10 +2,13 @@ version: '3.4'
 
 services:
   spaceshooter:
-    image: ${DOCKER_REGISTRY-}spaceshooter
+    image: notmatthias/highscore-backend
     build:
       context: .
       dockerfile: SpaceShooter/Dockerfile
-    ports:
-        - "8081:80"
-        - "8082:443"
+
+  frontend:
+    image: notmatthias/highscore-frontend
+    build: ../client
+    depends_on:
+      - spaceshooter

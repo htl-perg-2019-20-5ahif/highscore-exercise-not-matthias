@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  backend:
+    image: notmatthias/highscore-backend
+    ports:
+      - "8080:80"
+      - "8081:443"
+    environment:
+      ConnectionStrings__AccountEndpoint: "https://space-shooter.documents.azure.com:443/"
+      ConnectionStrings__AccountKey: "sVeLzJQu2sqcAI93Nbe0wwTgBxsSpCUhrCSJAGGnXMkTHhHAVEbyoxjrz7HXzaIKxTpnsgXlgI0oW9dbYU1iJA=="
+      ConnectionStrings__DatabaseName: "HighscoresDB"
+
+  frontend:
+    image: notmatthias/highscore-frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"

@@ -4,7 +4,7 @@ import { Bullet } from './bullet';
 import { Meteor } from './meteor';
 import axios from "axios";
 
-const SERVER_URL = "https://localhost:8082/api/highscores";
+const SERVER_URL = "http://localhost:8080/api/highscores";
 
 interface Highscore {
     playerName: string;

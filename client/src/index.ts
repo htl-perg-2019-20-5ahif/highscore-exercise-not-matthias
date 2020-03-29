@@ -2,6 +2,7 @@ import { Scene, Types, CANVAS, Game, Physics, Input, GameObjects } from 'phaser'
 import { Spaceship, Direction } from './spaceship';
 import { Bullet } from './bullet';
 import { Meteor } from './meteor';
+import axios from "axios";
 
 /**
  * Space shooter scene
@@ -23,6 +24,8 @@ class ShooterScene extends Scene {
     private isGameOver = false;
     private hits = 0;
 
+    private highScoreSent = false;
+
     preload() {
         // Preload images so that we can use them in our game
         this.load.image('space', 'images/deep-space.jpg');
@@ -32,6 +35,18 @@ class ShooterScene extends Scene {
     }
 
     create() {
+        // Update high score
+        this.showHighScores();
+
+        // Set click listener
+            document.getElementById("send_score").addEventListener("click", () => {
+                if (this.isGameOver) {
+                    const player = (document.getElementById("player_name") as HTMLInputElement).value;
+
+                    this.sendHighScore(player, this.hits);
+                }
+            });
+        
         if (this.isGameOver) {
             return;
         }
@@ -127,6 +142,42 @@ class ShooterScene extends Scene {
         const text = this.add.text(this.game.canvas.width / 2, this.game.canvas.height / 2, "Game Over :-(", 
             { font: "65px Arial", fill: "#ff0044", align: "center" });
         text.setOrigin(0.5, 0.5);
+
+        // Send the high score to the server
+        //
+        if (!this.highScoreSent) {
+            this.getHighScores();
+            this.showHighScores();
+
+            this.highScoreSent = true;
+        }
+    }
+
+    showHighScores() {
+        const list = document.getElementById("high_score_list");
+
+        // Clear list
+        //
+        list.innerHTML = "";
+
+        // Create new list
+        //
+        const entry = document.createElement('li');
+        entry.appendChild(document.createTextNode("Test"));
+        list.appendChild(entry);
+    }
+
+    getHighScores() {
+        axios.get("https://localhost:5001/api/highscores").then((data) => {
+            console.log(data);
+        }).catch(() => {
+            console.log("Error");
+        });
+    }
+
+    sendHighScore(player: string, highScore: number) {
+        console.log(player + " " + highScore);
+        
     }
 }
 

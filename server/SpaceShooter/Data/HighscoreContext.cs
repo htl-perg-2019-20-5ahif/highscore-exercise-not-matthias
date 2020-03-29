@@ -15,6 +15,9 @@ namespace SpaceShooter.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.HasDefaultContainer("Highscores");
+            modelBuilder.Entity<Highscore>().HasNoDiscriminator();
         }
     }
 }

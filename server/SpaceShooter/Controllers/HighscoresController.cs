@@ -52,26 +52,5 @@ namespace SpaceShooter.Controllers
 
             return CreatedAtAction("GetHighscore", new { id = highscore.HighscoreId }, highscore);
         }
-
-        // DELETE: api/Highscores/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Highscore>> DeleteHighscore(int id)
-        {
-            var highscore = await _context.Highscores.FindAsync(id);
-            if (highscore == null)
-            {
-                return NotFound();
-            }
-
-            _context.Highscores.Remove(highscore);
-            await _context.SaveChangesAsync();
-
-            return highscore;
-        }
-
-        private bool HighscoreExists(int id)
-        {
-            return _context.Highscores.Any(e => e.HighscoreId == id);
-        }
     }
 }

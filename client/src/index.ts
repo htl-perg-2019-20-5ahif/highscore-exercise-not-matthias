@@ -4,6 +4,13 @@ import { Bullet } from './bullet';
 import { Meteor } from './meteor';
 import axios from "axios";
 
+const SERVER_URL = "https://localhost:8082/api/highscores";
+
+interface Highscore {
+    playerName: string;
+    score: number;
+}
+
 /**
  * Space shooter scene
  * 
@@ -39,22 +46,23 @@ class ShooterScene extends Scene {
         this.showHighScores();
 
         // Set click listener
-            document.getElementById("send_score").addEventListener("click", () => {
-                if (this.isGameOver) {
-                    const player = (document.getElementById("player_name") as HTMLInputElement).value;
+        document.getElementById("send_score").addEventListener("click", async () => {
+            if (this.isGameOver) {
+                const player = (document.getElementById("player_name") as HTMLInputElement).value;
 
-                    this.sendHighScore(player, this.hits);
-                }
-            });
-        
+                this.sendHighScore(player, this.hits);
+                await this.showHighScores();
+            }
+        });
+
         if (this.isGameOver) {
             return;
         }
-        
+
         //  Add a background
         this.add.tileSprite(0, 0, this.game.canvas.width, this.game.canvas.height, 'space').setOrigin(0, 0);
 
-        this.points = this.add.text(this.game.canvas.width * 0.1, this.game.canvas.height * 0.1, "0", 
+        this.points = this.add.text(this.game.canvas.width * 0.1, this.game.canvas.height * 0.1, "0",
             { font: "32px Arial", fill: "#ff0044", align: "left" });
 
         // Create bullets and meteors
@@ -139,21 +147,22 @@ class ShooterScene extends Scene {
         this.spaceShip.kill();
 
         // Display "game over" text
-        const text = this.add.text(this.game.canvas.width / 2, this.game.canvas.height / 2, "Game Over :-(", 
+        const text = this.add.text(this.game.canvas.width / 2, this.game.canvas.height / 2, "Game Over :-(",
             { font: "65px Arial", fill: "#ff0044", align: "center" });
         text.setOrigin(0.5, 0.5);
 
         // Send the high score to the server
         //
         if (!this.highScoreSent) {
-            this.getHighScores();
-            this.showHighScores();
-
-            this.highScoreSent = true;
+            this.showHighScores().then(() => {
+                this.highScoreSent = true;
+            });
         }
     }
 
-    showHighScores() {
+    async showHighScores() {
+        const data: Highscore[] = await this.getHighScores();
+
         const list = document.getElementById("high_score_list");
 
         // Clear list
@@ -162,22 +171,21 @@ class ShooterScene extends Scene {
 
         // Create new list
         //
-        const entry = document.createElement('li');
-        entry.appendChild(document.createTextNode("Test"));
-        list.appendChild(entry);
+        for (const highscore of data) {
+            const entry = document.createElement('li');
+            entry.appendChild(document.createTextNode(`${highscore.playerName}: ${highscore.score}`));
+            list.appendChild(entry);
+        }
     }
 
-    getHighScores() {
-        axios.get("https://localhost:5001/api/highscores").then((data) => {
-            console.log(data);
-        }).catch(() => {
-            console.log("Error");
-        });
+    async getHighScores() {
+        return (await axios.get(SERVER_URL)).data;
     }
 
-    sendHighScore(player: string, highScore: number) {
+    async sendHighScore(player: string, highScore: number) {
         console.log(player + " " + highScore);
-        
+
+        await axios.post(SERVER_URL, { playerName: player, score: highScore });
     }
 }
 

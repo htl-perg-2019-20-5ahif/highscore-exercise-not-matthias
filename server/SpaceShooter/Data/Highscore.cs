@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace SpaceShooter.Data
 {
     public class Highscore
     {
-        public int HighscoreId { get; set; }
+        [Key]
+        public Guid HighscoreId { get; set; } = Guid.NewGuid();
 
         [Required, MaxLength(3)]
         public string PlayerName { get; set; }
